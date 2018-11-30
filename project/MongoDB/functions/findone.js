@@ -1,1 +1,0 @@
-db.export.findOne({year: 2017})
