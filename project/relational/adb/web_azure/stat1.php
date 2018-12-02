@@ -10,6 +10,7 @@
 	<body>
 	    <div class='jumbotron'>
 			<h1>Oil Export ADB</h1>			
+			<a href="index.php">Home</a>
 		</div>
 		<?php
 

@@ -10,6 +10,7 @@
 	<body>
 	    <div class='jumbotron'>
 			<h1>Oil Export ADB</h1>			
+			<a href="stat1.php">Home</a>
 		</div>
 		<?php
 
@@ -47,7 +48,7 @@
 			   return "select p.pid, p.pname, c.cname, f.month, f.year, f.amountMNOK " .
                "from facttable f, product_dim p, country_dim c " .
                "where p.pid=f.pid and c.cid=f.cid and f.year=2017" .			   
-			   "order by p.id, f.year, f.month";
+			   "order by p.pid, f.year, f.month";
 		   }
 
 		   function DisplayData($getQry)  
