@@ -3,29 +3,27 @@
 		<title>
 			IKT446
 		</title>
-		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">		
 	</head>
 	<body>
 	    <div class='jumbotron'>
 			<h1>Oil Export ADB</h1>			
-			<a href="stat1.php">Home</a>
+			<a href="stat1.php">Home</a>	
 		</div>
 		<?php
 
 		   function OpenConnection()  
 		   {  
-				$connectionInfo = array(
-					"UID" => "eivind@eivinl16", 
-					"pwd" => "Po68MLrXDD", 
-					"Database" => "ikt446_adb", 
-					"LoginTimeout" => 30, 
-					"Encrypt" => 1, 
-					"TrustServerCertificate" => 0
-				);
-				$serverName = "tcp:eivinl16.database.windows.net,1433";
-				$conn = sqlsrv_connect($serverName, $connectionInfo);
+			$config = parse_ini_file('./config.ini');
+			$connectionInfo = array(
+				"UID" => $config['username'], 
+				"pwd" => $config['password'], 
+				"Database" => $config['dbname'], 
+				"LoginTimeout" => 30, 
+				"Encrypt" => 1, 
+				"TrustServerCertificate" => 0
+			);					
+				$conn = sqlsrv_connect($config['servername'], $connectionInfo);
 				
 				if($conn == false)  
 					die(FormatErrors(sqlsrv_errors()));  
@@ -84,5 +82,7 @@
 			sqlsrv_free_stmt($getQry);  					
 			sqlsrv_close($conn);  			
 		?>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 	</body>
 </html>
