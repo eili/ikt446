@@ -4,8 +4,6 @@
         IKT446
 		</title>
 		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
 	</head>
 	<body>
 	    <div class='jumbotron'>
@@ -15,10 +13,11 @@
 		<?php
 		    function openConnection()  
 		    {  
-				$servername = "localhost";
-				$username = "eivind";
-				$password = "passord1";
-				$dbname = "proj_adb";								
+				$config = parse_ini_file('./config.ini');
+				$servername = $config['servername'];
+				$username = $config['username'];
+				$password = $config['password'];
+				$dbname = $config['dbname'];							
 				// Create connection
 				$conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -27,7 +26,17 @@
 					die("Connection failed: " . $conn->connect_error);
 				} 			
 				return $conn;	
-		    } 
+		    }  
+
+			function ReadSqlQuery($conn, $sql)
+			{
+				$getQry = sqlsrv_query($conn, $sql);  
+				if ($getQry == FALSE) { 
+					echo("ReadSqlQuery == FALSE");    
+					die(FormatErrors(sqlsrv_errors()));  
+				}	
+				return $getQry;
+			}
 
 			function getYearUrlparam()
 			{
@@ -83,7 +92,7 @@
                 "and f.month={$month} " .
 				"and f.pid=1 " .
 				"and f.cid='{$cc}' ";				
-			}
+			}		
 
 			function displayData($getQry, $year, $month, $cc)  
 			{  																																		
@@ -97,7 +106,7 @@
 				echo "<div class='col-md-6'>";
 				echo "<table class='table table-sm table-hover'>";
 				echo "<thead><tr><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead>";
-				while($row = $getQry->fetch_assoc())
+				while($row = $getQry->fetch_assoc())  				
 				{
 					echo "<tbody><tr>";					
 					echo "<td>" . round($row["MUSD"]) . "</td>";
@@ -108,7 +117,7 @@
 				echo "</div>"; //col
 				echo "</div>"; //row
 				echo "</div>"; //container				
-			}  		
+			}  	
 
 			$conn = openConnection();  	
             $year = getYearUrlparam();
@@ -120,7 +129,9 @@
 			
 			//dispose resources	
 			$getQry->free();			
-			mysqli_close($conn);	
+			mysqli_close($conn);  	
 		?>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 	</body>
 </html>

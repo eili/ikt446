@@ -3,9 +3,7 @@
 		<title>
 		IKT446
 		</title>
-		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">	
 	</head>
 	<body>
 	    <div class='jumbotron'>
@@ -15,10 +13,11 @@
 		<?php
 		    function openConnection()  
 		    {  
-				$servername = "localhost";
-				$username = "eivind";
-				$password = "passord1";
-				$dbname = "proj_adb";								
+				$config = parse_ini_file('./config.ini');
+				$servername = $config['servername'];
+				$username = $config['username'];
+				$password = $config['password'];
+				$dbname = $config['dbname'];							
 				// Create connection
 				$conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -27,7 +26,18 @@
 					die("Connection failed: " . $conn->connect_error);
 				} 			
 				return $conn;	
-		    } 
+		    }  
+
+			function ReadSqlQuery($conn, $sql)
+			{
+				 $getQry = sqlsrv_query($conn, $sql);  
+				 if ($getQry == FALSE) { 
+					 echo("ReadSqlQuery == FALSE");    
+					 die(FormatErrors(sqlsrv_errors()));  
+				 }	
+				 return $getQry;
+			}
+
  
 			function getYearUrlparam()
 			{
@@ -54,8 +64,8 @@
 				"from oilprice_dim c " . 
 				"where c.year={$year} " .
 				"order by c.month";				 
-			}
- 
+			}			
+
 			function displayData($avgQry, $getQry, $year)  
 			{  																																		
 				echo "<div class='container'>";
@@ -64,7 +74,7 @@
 				echo "<h1>Oil price pr barrel</h1>";				
 				echo "<table class='table table-sm table-hover'>";
 				echo "<thead><tr><th>Year</th><th>Average currency</th></tr></thead>";
-				while($row = $avgQry->fetch_assoc())
+				while($row = $avgQry->fetch_assoc())		
 				{
 					echo "<tbody><tr>"; 
 					echo "<td><a href='stat5.php?year={$row["year"]}'>" . $row["year"] . "</a></td>";					
@@ -72,12 +82,13 @@
 					echo "</tr></tbody>";
 				}
 				echo "</table>";
+				echo "<div id='chartContainer1' style='height: 370px; width: 100%;'></div>";
 				echo "</div>"; //col
 				echo "<div class='col-md-6'>";
 				echo "<h3>{$year}</h3>";
 				echo "<table class='table table-sm table-hover'>";
 				echo "<thead><tr><th>Month</th><th>Barrel USD</th></tr></thead>";
-				while($row = $getQry->fetch_assoc())
+				while($row = $getQry->fetch_assoc())						
 				{
 					echo "<tbody><tr>";
 					echo "<td>" . $row["month"] . "</td>";
@@ -88,8 +99,8 @@
 				 echo "</div>"; //col
 				 echo "</div>"; //row
 				 echo "</div>"; //container				 
-			}  		
- 			
+			}  		  		
+ 
 			$conn = openConnection();  	
 			$year = getYearUrlparam();
 			$avgQry = $conn->query(createYearlySql());		 
@@ -100,7 +111,40 @@
 			//dispose resources
 			$avgQry->free();	
 			$getQry->free();			
-			mysqli_close($conn);		
+			mysqli_close($conn);			
 		?>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+		<script>
+
+		function drawGraph(data){			
+			var chart = new CanvasJS.Chart("chartContainer1",
+				{
+					animationEnabled: true,
+					title: {
+						text: "Oilprice in USD "
+					},
+					axisX: {						
+						interval: 10,
+					},
+					data: [
+					{
+						type: "splineArea",						
+						color: "rgba(255,12,32,.3)",
+						showInLegend: true,
+						legendText: "Date",
+						dataPoints: data
+					},
+					]
+				});
+			chart.render();
+			}
+		  $( document ).ready(function() {
+			 $.getJSON("./oilpriceservice.php", function(result){				 
+				 drawGraph(result);
+			 });	
+		  });
+		</script>
 	</body>
 </html>

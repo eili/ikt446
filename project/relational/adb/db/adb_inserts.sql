@@ -5,6 +5,7 @@ select cid, cname from proj_odb.country;
 insert into proj_adb.product_dim
 select pid, pname from proj_odb.product;
 
+insert into oilprice_dim values(10,2018,76.73);
 insert into oilprice_dim values(9,2018,75.36);
 insert into oilprice_dim values(8,2018,71.08);
 insert into oilprice_dim values(7,2018,72.67);
