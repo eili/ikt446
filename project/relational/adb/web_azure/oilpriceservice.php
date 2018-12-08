@@ -30,32 +30,25 @@
 		   }
 
 
-		   function createSqlByYear()
-		   {
-			   return "select f.year, sum(f.amountMNOK) as MNOK, sum(f.amountMUSD) as MUSD, sum(f.kbarrels) as KBarr " .
-			   "from fact_aggregated f " . 
-			   "where f.pid=1 " .				
-			   "group by f.year " .
-			   "order by f.year";				
-		   }
-           $conn = OpenConnection();  	
-			
-	    	$mainsql = createSqlByYear();						
+		   function createSql()
+			{
+				return "select c.month, c.year, c.barrelprice " .
+				"from oilprice_dim c " . 
+				"order by c.year, c.month";				 
+			}		
+           $conn = OpenConnection();  					    	
 				
-			$mainQry = ReadSqlQuery($conn, $mainsql);
+			$mainQry = ReadSqlQuery($conn, createSql());
+
             $dataPoints = array();
-            $volumedata = array();
+            $x=0;
 			while($row = sqlsrv_fetch_array($mainQry, SQLSRV_FETCH_ASSOC))  {
-				$ye = strval($row["year"]);
-                $mu = $row["MUSD"];			
-                $vol = $row["KBarr"];			
-                array_push($dataPoints, array("y"=> $mu, label=>$ye));								
-                array_push($volumedata, array("y"=> $vol, label=>$ye));								
+				$time = $row["year"] . "-" . $row["month"];
+                $oilprice = $row["barrelprice"];			
+                $x++;
+				array_push($dataPoints, array("y"=> $oilprice, label=>$time));								
             }		
-            $container = array();
-            $container["MUSD"] = $dataPoints;
-            $container["KBarr"] = $volumedata;
-            echo json_encode($container, JSON_NUMERIC_CHECK);
+            echo json_encode($dataPoints, JSON_NUMERIC_CHECK);
 		
 			sqlsrv_free_stmt($mainQry);  			
 			sqlsrv_close($conn);  			

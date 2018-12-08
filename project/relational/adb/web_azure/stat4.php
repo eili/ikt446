@@ -133,9 +133,7 @@
 					},
 					data: [
 					{
-						type: "splineArea",
-						legendMarkerType: "triangle",
-						legendMarkerColor: "green",
+						type: "splineArea",						
 						color: "rgba(255,12,32,.3)",
 						showInLegend: true,
 						legendText: "Date",

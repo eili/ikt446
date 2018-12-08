@@ -83,6 +83,7 @@
 					echo "</tr></tbody>";
 				}
 				echo "</table>";
+				echo "<div id='chartContainer1' style='height: 370px; width: 100%;'></div>";
 				echo "</div>"; //col
 				echo "<div class='col-md-6'>";
 				echo "<h3>{$year}</h3>";
@@ -115,5 +116,37 @@
 		?>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+		<script>
+
+		function drawGraph(data){			
+			console.log(data);
+			var chart = new CanvasJS.Chart("chartContainer1",
+				{
+					animationEnabled: true,
+					title: {
+						text: "Oilprice in USD "
+					},
+					axisX: {						
+						interval: 10,
+					},
+					data: [
+					{
+						type: "splineArea",						
+						color: "rgba(255,12,32,.3)",
+						showInLegend: true,
+						legendText: "Date",
+						dataPoints: data
+					},
+					]
+				});
+			chart.render();
+			}
+		  $( document ).ready(function() {
+			 $.getJSON("./oilpriceservice.php", function(result){				 
+				 drawGraph(result);
+			 });	
+		  });
+		</script>
 	</body>
 </html>
