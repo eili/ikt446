@@ -7,7 +7,7 @@
 	</head>
 	<body>
 	    <div class='jumbotron'>
-			<h1>Oil Export ADB</h1>			
+			<h1>Oil Export ADB MySQL</h1>			
 		</div>
 		<?php
 
@@ -31,7 +31,8 @@
 		    function getYearUrlparam()
 		    {
 				$yyyy = $_GET['year'] ?? '';				
-				if($yyyy=='') {
+				if($yyyy=='') 
+				{
 					//set default if not provided.
 					$yyyy = "2017";
 				}
@@ -106,9 +107,8 @@
 			$conn = openConnection();  	
 			$year = getYearUrlparam();
 			
-			$sql = createSql($year);
-			$mainsql = createSqlByYear();
-			$mainQry = $conn->query($mainsql);
+			$sql = createSql($year);			
+			$mainQry = $conn->query(createSqlByYear());
 			$getQry = $conn->query($sql);			
 			displayData($mainQry, $getQry, $year);
 						

@@ -1,9 +1,9 @@
 
-insert into proj_adb.country_dim
-select cid, cname from proj_odb.country;
+insert into ikt446_adb.country_dim
+select cid, cname from ikt446_odb.country;
 
-insert into proj_adb.product_dim
-select pid, pname from proj_odb.product;
+insert into ikt446_adb.product_dim
+select pid, pname from ikt446_odb.product;
 
 insert into oilprice_dim values(10,2018,76.73);
 insert into oilprice_dim values(9,2018,75.36);
@@ -120,9 +120,9 @@ insert into currency_dim values(11,2014,6.808);
 insert into currency_dim values(12,2014,7.265);
 
 
-insert into proj_adb.facttable
+insert into ikt446_adb.facttable
 select pid, cid, month, year, amountMNOK 
-from proj_odb.sales;
+from ikt446_odb.sales;
 
 delete from fact_aggregated;
 delete from facttable_USDP_Barrels;

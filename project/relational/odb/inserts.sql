@@ -1,6 +1,6 @@
 delete from country;
 delete from product;
-delete from oilprice;
+delete from sales;
 
 insert into product values(1, 'Eksport av råolje');
 insert into product values(2, 'Eksport av naturgass');

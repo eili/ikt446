@@ -1,53 +1,39 @@
 <html>
 	<head>
 		<title>
-        IKT446
+        IKT446 MongoDB
 		</title>
 		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	</head>
 	<body>
 	    <div class='jumbotron'>
-			<h1>Oil Export ADB MySQL</h1>			
+			<h1>Oil Export ADB Mongodb</h1>			
 			<a href="stat1.php">Home</a>			
 		</div>
 		<?php
-		    function openConnection()  
-		    {  
-				$config = parse_ini_file('./config.ini');
-				$servername = $config['servername'];
-				$username = $config['username'];
-				$password = $config['password'];
-				$dbname = $config['dbname'];							
-				// Create connection
-				$conn = new mysqli($servername, $username, $password, $dbname);
-
-				// Check connection
-				if ($conn->connect_error) {
-					die("Connection failed: " . $conn->connect_error);
-				} 			
-				return $conn;	
-		    }  
+            require 'vendor/autoload.php';			    
 
 			function getYearUrlparam()
-		    {
-				$yyyy = $_GET['year'] ?? '';				
-				if($yyyy=='') 
-				{
-					//set default if not provided.
-					$yyyy = "2017";
-				}
-				if(!is_numeric($yyyy))
-				{
-					echo "<h2>Year parameter must be in integer type.</h2>";
-					$yyyy = "2017";
-				}
-				return $yyyy;
-		    }
+            {
+                $yyyy = $_GET['year'] ?? '';				
+                if($yyyy=='') 
+                {
+                    //set default if not provided.
+                    $yyyy = 2017;
+                }
+                if(!is_numeric($yyyy))
+                {
+                    echo "<h2>Year parameter must be in integer type.</h2>";
+                    $yyyy = 2017;
+                }
+                return (int) $yyyy;
+            }		
+
             function getMonthUrlparam()
 			{
 				$month = $_GET['month'] ?? '';
-				if($month=='') 
-				{
+                if($month=='') 
+                {
 					//set default if not provided.
 					$month = 1;
 				}
@@ -68,26 +54,15 @@
 			function getCountryCodeparam()
 			{
 				$cc = $_GET['cc'] ?? '';
-				if(strlen($cc) > 2) 
-				{
+                if(strlen($cc) > 2) 
+                {
 					echo "<h2>Countrycode parameter must be only two characters.</h2>";
 					return "";
 				}
 				return $cc;
-			}
+			}	
 
-			function createSql($year, $month, $cc)
-			{                
-				return "select f.month, f.amountMUSD / DAY(LAST_DAY(DATE_ADD(MAKEDATE($year, 1), INTERVAL $month-1 MONTH))) as MUSD, f.kbarrels / DAY(LAST_DAY(DATE_ADD(MAKEDATE($year, 1), INTERVAL $month-1 MONTH)))  as KBarr " .
-				"from facttable_USDP_Barrels f, product_dim p " . 
-				"where f.pid=p.pid  " .
-                "and f.year={$year} " .
-                "and f.month={$month} " .
-				"and f.pid=1 " .
-				"and f.cid='{$cc}' ";				
-			}		
-
-			function displayData($getQry, $year, $month, $cc)  
+			function displayData($result1, $year, $month, $cc)  
 			{  																																		
 				echo "<div class='container'>";
 				echo "<div class='row'>";
@@ -98,12 +73,13 @@
 				echo "</div>"; //col
 				echo "<div class='col-md-6'>";
 				echo "<table class='table table-sm table-hover'>";
-				echo "<thead><tr><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead>";
-				while($row = $getQry->fetch_assoc())  				
+                echo "<thead><tr><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead>";
+                $daysInMonth = cal_days_in_month(1, $month, $year);
+				foreach ($result1 as $row) 			
 				{
 					echo "<tbody><tr>";					
-					echo "<td>" . round($row["MUSD"]) . "</td>";
-					echo "<td>" . round($row["KBarr"]) . "</td>";
+					echo "<td>" . round($row["amountMusd"] / $daysInMonth, 1) . "</td>";
+					echo "<td>" . round($row["kbarrels"] / $daysInMonth, 1) . "</td>";
 					echo "</tr></tbody>";
 				}
 				echo "</table>";
@@ -111,18 +87,21 @@
 				echo "</div>"; //row
 				echo "</div>"; //container				
 			}  	
-
-			$conn = openConnection();  	
+			
             $year = getYearUrlparam();
             $month = getMonthUrlparam();						
-			$cc = getCountryCodeparam();			
-			$sql = createSql($year, $month, $cc);
-			$getQry = $conn->query($sql);		
-			displayData($getQry, $year, $month, $cc);
-			
-			//dispose resources	
-			$getQry->free();			
-			mysqli_close($conn);  	
+            $cc = getCountryCodeparam();			
+            
+            $client = new MongoDB\Client("mongodb://localhost:27017");
+
+            //Convert values to daily summary
+            $factColl = $client->ikt446_adb->fact;
+            $filter2  = ["year" => $year, "month" => $month, "cc" => $cc];                    
+            $options2 = ["sort" => ["year" => -1]];
+            $result1 = $factColl->find($filter2, $options2);
+
+            displayData($result1, $year, $month, $cc);
+				
 		?>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>

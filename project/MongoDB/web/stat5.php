@@ -1,62 +1,35 @@
 <html>
 	<head>
 		<title>
-		IKT446
+		IKT446 MongoDB
 		</title>
 		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">	
 	</head>
 	<body>
 	    <div class='jumbotron'>
-			<h1>Oil Export ADB MySQL</h1>			
+			<h1>Oil Export ADB Mongodb</h1>			
 			<a href="stat1.php">Home</a>
 		</div>
 		<?php
-		    function openConnection()  
-		    {  
-				$config = parse_ini_file('./config.ini');
-				$servername = $config['servername'];
-				$username = $config['username'];
-				$password = $config['password'];
-				$dbname = $config['dbname'];							
-				// Create connection
-				$conn = new mysqli($servername, $username, $password, $dbname);
-
-				// Check connection
-				if ($conn->connect_error) {
-					die("Connection failed: " . $conn->connect_error);
-				} 			
-				return $conn;	
-		    }  			
- 
+            require 'vendor/autoload.php';		
+		    			 
 			function getYearUrlparam()
-		    {
-				$yyyy = $_GET['year'] ?? '';				
-				if($yyyy=='') 
-				{
-					//set default if not provided.
-					$yyyy = "2017";
-				}
-				if(!is_numeric($yyyy))
-				{
-					echo "<h2>Year parameter must be in integer type.</h2>";
-					$yyyy = "2017";
-				}
-				return $yyyy;
-		    }
+            {
+                $yyyy = $_GET['year'] ?? '';				
+                if($yyyy=='') 
+                {
+                    //set default if not provided.
+                    $yyyy = 2017;
+                }
+                if(!is_numeric($yyyy))
+                {
+                    echo "<h2>Year parameter must be in integer type.</h2>";
+                    $yyyy = 2017;
+                }
+                return (int) $yyyy;
+            }					
 
-			function createYearlySql()
-			{
-				return "select year, AVG(barrelprice) as avgusd from oilprice_dim group by year order by year desc";
-			}
-			function createSql($year)
-			{
-				return "select c.month, c.year, c.barrelprice " .
-				"from oilprice_dim c " . 
-				"where c.year={$year} " .
-				"order by c.month";				 
-			}			
-
-			function displayData($avgQry, $getQry, $year)  
+			function displayData($result1, $result2, $year)  
 			{  																																		
 				echo "<div class='container'>";
 				echo "<div class='row'>";
@@ -64,11 +37,11 @@
 				echo "<h1>Oil price pr barrel</h1>";				
 				echo "<table class='table table-sm table-hover'>";
 				echo "<thead><tr><th>Year</th><th>Average currency</th></tr></thead>";
-				while($row = $avgQry->fetch_assoc())		
+				foreach ($result1 as $row) 		
 				{
 					echo "<tbody><tr>"; 
 					echo "<td><a href='stat5.php?year={$row["year"]}'>" . $row["year"] . "</a></td>";					
-					echo "<td>" . $row["avgusd"] . "</td>";
+					echo "<td>" . round($row["avgValue"], 2) . "</td>";
 					echo "</tr></tbody>";
 				}
 				echo "</table>";
@@ -78,11 +51,11 @@
 				echo "<h3>{$year}</h3>";
 				echo "<table class='table table-sm table-hover'>";
 				echo "<thead><tr><th>Month</th><th>Barrel USD</th></tr></thead>";
-				while($row = $getQry->fetch_assoc())						
+				foreach ($result2 as $row) 						
 				{
 					echo "<tbody><tr>";
 					echo "<td>" . $row["month"] . "</td>";
-					echo "<td>" . $row["barrelprice"] . "</td>";
+					echo "<td>" . round($row["value"], 2) . "</td>";
 					echo "</tr></tbody>";
 				}
 				 echo "</table>";
@@ -91,17 +64,22 @@
 				 echo "</div>"; //container				 
 			}  		  		
  
-			$conn = openConnection();  	
-			$year = getYearUrlparam();
-			$avgQry = $conn->query(createYearlySql());		 
-			$sql = createSql($year);
-			$getQry = $conn->query($sql);		
-			displayData($avgQry, $getQry, $year);
-			
-			//dispose resources
-			$avgQry->free();	
-			$getQry->free();			
-			mysqli_close($conn);			
+            $year = getYearUrlparam();
+            $client = new MongoDB\Client("mongodb://localhost:27017");
+
+            //Find average oil price for each year
+            $avgColl = $client->ikt446_adb->oilpriceAvgByYear;
+            $filter2  = [];                    
+            $options2 = ["sort" => ["year" => -1]];
+            $result1 = $avgColl->find($filter2, $options2);
+                                                       
+            //List oilprice for selected year, show value for every month
+            $currColl = $client->ikt446_adb->oilprice;   
+			$filter2  = ["year" => $year];                    
+			$options2 = ["sort" => ["month" => 1]];
+            $result2 = $currColl->find($filter2, $options2);
+
+            displayData($result1, $result2, $year);				
 		?>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -131,9 +109,9 @@
 			chart.render();
 			}
 		  $( document ).ready(function() {
-			 $.getJSON("./oilpriceservice.php", function(result){				 
-				 drawGraph(result);
-			 });	
+			//  $.getJSON("./oilpriceservice.php", function(result){				 
+			// 	 drawGraph(result);
+			//  });	
 		  });
 		</script>
 	</body>

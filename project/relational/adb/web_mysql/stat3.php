@@ -8,7 +8,7 @@
 	</head>
 	<body>
 	    <div class='jumbotron'>
-			<h1>Oil Export ADB</h1>			
+			<h1>Oil Export ADB MySQL</h1>			
 			<a href="stat1.php">Home</a>				
 		</div>
 		<?php
@@ -28,21 +28,12 @@
 				} 			
 				return $conn;	
 		    }  
-
-			function ReadSqlQuery($conn, $sql)
-			{
-				$getQry = sqlsrv_query($conn, $sql);  
-				if ($getQry == FALSE) { 
-					echo("ReadSqlQuery == FALSE");    
-					die(FormatErrors(sqlsrv_errors()));  
-				}	
-				return $getQry;
-			}
 			
 			function getYearUrlparam()
-			{
-				$yyyy = $_GET['year'];
-				if(!$yyyy || $yyyy=='') {
+		    {
+				$yyyy = $_GET['year'] ?? '';				
+				if($yyyy=='') 
+				{
 					//set default if not provided.
 					$yyyy = "2017";
 				}
@@ -52,7 +43,7 @@
 					$yyyy = "2017";
 				}
 				return $yyyy;
-			}
+		    }
 
 			function getCountryCodeparam()
 			{
@@ -131,13 +122,10 @@
 
 			$conn = openConnection();  	
 			$year = getYearUrlparam();
-			$cc = getCountryCodeparam();			
-			$countrySql = getCountryByCC($cc);
-			$countryQry = $conn->query($countrySql);	
-			$byYearSql = getCountrystatByYear($cc);
-			$byYearQry = $conn->query($byYearSql);		
-			$sql = createSql($year, $cc);
-			$getQry = $conn->query($sql);		
+			$cc = getCountryCodeparam();						
+			$countryQry = $conn->query(getCountryByCC($cc));				
+			$byYearQry = $conn->query(getCountrystatByYear($cc));					
+			$getQry = $conn->query(createSql($year, $cc));		
 			displayData($countryQry, $byYearQry, $getQry, $year, $cc);
 			
 			//dispose resources
