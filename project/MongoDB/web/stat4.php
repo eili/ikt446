@@ -112,9 +112,9 @@
 			chart.render();
 			}
 		  $( document ).ready(function() {
-			//  $.getJSON("./currencyservice.php", function(result){				 
-			// 	 drawGraph(result);
-			//  });	
+			 $.getJSON("./currencyservice.php", function(result){				 
+				 drawGraph(result);
+			 });	
 		  });
 		</script>
 	</body>

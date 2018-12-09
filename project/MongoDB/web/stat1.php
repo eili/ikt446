@@ -88,5 +88,61 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>		
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+		<script>
+
+		function drawGraph(data1, data2){						
+			var chart = new CanvasJS.Chart("chartContainer1",
+				{
+					animationEnabled: true,
+					title: {
+						text: "Oil export"
+					},
+					axisY: {
+						title: "Million USD",
+						titleFontColor: "#4F81BC",
+						lineColor: "#4F81BC",
+						labelFontColor: "#4F81BC",
+						tickColor: "#4F81BC"
+					},
+					axisY2: {
+						title: "Barrels*1000",
+						titleFontColor: "#C0504E",
+						lineColor: "#C0504E",
+						labelFontColor: "#C0504E",
+						tickColor: "#C0504E"
+					},	
+					toolTip: {
+						shared: true
+					},
+					data: [
+					{
+						type: "column",
+						name: "Million USD",
+						legendText: "Million USD",						
+						color: "rgba(255,12,32,.3)",
+						showInLegend: true,
+						legendText: "Year",
+						dataPoints: data1
+					},
+					{
+						type: "column",
+						name: "Barrels*1000",
+						legendText: "Barrels*1000",						
+						color: "rgba(32,12,200,.3)",
+						showInLegend: true,
+						legendText: "Year",
+						axisYType: "secondary",
+						dataPoints: data2
+					},
+					]
+				});
+			chart.render();
+			}
+		  $( document ).ready(function() {
+			 $.getJSON("service1.php", function(result){			
+				 drawGraph(result["MUSD"], result["KBarr"]);
+			 });	
+		  });
+		</script>
 	</body>
 </html>

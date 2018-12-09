@@ -109,9 +109,9 @@
 			chart.render();
 			}
 		  $( document ).ready(function() {
-			//  $.getJSON("./oilpriceservice.php", function(result){				 
-			// 	 drawGraph(result);
-			//  });	
+			 $.getJSON("./oilpriceservice.php", function(result){				 
+				 drawGraph(result);
+			 });	
 		  });
 		</script>
 	</body>

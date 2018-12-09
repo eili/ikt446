@@ -40,13 +40,13 @@
 				return $cc;
 			}
 			
-			function DisplayData($result1, $result2, $year)  
+			function DisplayData($result1, $result2, $year, $cc)  
 			{  	
 				echo "<div class='container'>";
 				echo "<div class='row'>";
 				echo "<div class='col-md-6'>";
 				echo "<div><h1>Oil export for {$year}</h1>";
-					
+				echo "<h3>" . $cc . "</h3>";	
 				echo "<h3>MUSD and K barrels</h3></div>";
 				echo "<table class='table table-sm table-hover'>";
 				echo "<thead><tr><th>Year</th><th>MUSD</th><th>KBarr</th></tr></thead>";
@@ -129,10 +129,10 @@
 			chart.render();
 			}
 		  $( document ).ready(function() {
-			//   var cc=getUrlParameter("cc");
-			//  $.getJSON("./exportservice.php?&cc="+cc, function(result){				 
-			// 	 drawGraph(result);
-			//  });	
+			 var cc=getUrlParameter("cc");
+			 $.getJSON("./exportservice.php?&cc="+cc, function(result){				 
+				 drawGraph(result);
+			 });	
 		  });
 		</script>
 	</body>
