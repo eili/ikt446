@@ -140,3 +140,9 @@ insert into fact_aggregated
 select f.pid, f.cid, f.year, sum(f.amountMNOK), sum(amountMUSD), sum(kbarrels)
 from facttable_USDP_Barrels f
 group by f.pid, f.cid, f.year;
+
+insert into fact_aggregated_year
+select pid, year, sum(amountMNOK), sum(amountMUSD), sum(kbarrels)
+from fact_aggregated
+where pid=1
+group by year;

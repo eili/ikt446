@@ -46,22 +46,14 @@
 
 		    function createSqlByYear()
 		    {
-				return "select f.year, sum(f.amountMNOK) as MNOK, sum(f.amountMUSD) as MUSD, sum(f.kbarrels) as KBarr " .
-				"from fact_aggregated f " . 
-				"where f.pid=1 " .				
-				"group by f.year " .
+				return "select f.year, f.amountMNOK as MNOK, f.amountMUSD as MUSD, f.kbarrels as KBarr " .
+				"from fact_aggregated_year f " . 				
 				"order by f.year desc";				
 		    }
 
 		    function createSql($year)
 		    {
-				return "select f.cid, f.year, sum(f.amountMNOK) as MNOK, sum(f.amountMUSD) as MUSD, sum(f.kbarrels) as KBarr  " .
-				"from facttable_USDP_Barrels f, product_dim p, country_dim c " . 
-				"where f.pid=p.pid and f.cid=c.cid " .
-				"and f.year={$year} " .
-				"and f.pid=1 " .
-				"group by f.year, f.cid " .
-				"order by MUSD desc";
+				return "SELECT f.cid, f.year, f.amountMNOK as MNOK, f.amountMUSD as MUSD, f.kbarrels as KBarr FROM fact_aggregated f WHERE f.year={$year} order by MUSD desc";
 		    }
 
 		    function displayData($mainQry, $getQry, $year)  

@@ -68,3 +68,13 @@ create table fact_aggregated (
   foreign key (cid) references country_dim(cid),
   primary key(pid,cid,year)
 );
+
+create table fact_aggregated_year (
+  pid int,  
+  year int not null check (year > 1970 and year < 2100),
+  amountMNOK numeric(12,2),
+  amountMUSD numeric(12,2),
+  kbarrels numeric(12,2),
+  foreign key (pid) references product_dim(pid),  
+  primary key(pid, year)
+);

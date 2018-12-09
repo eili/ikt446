@@ -21,10 +21,8 @@
 
 		   function createSqlByYear()
 		   {
-			   return "select f.year, sum(f.amountMNOK) as MNOK, sum(f.amountMUSD) as MUSD, sum(f.kbarrels) as KBarr " .
-			   "from fact_aggregated f " . 
-			   "where f.pid=1 " .				
-			   "group by f.year " .
+			   return "select f.year, f.amountMNOK as MNOK, f.amountMUSD as MUSD, f.kbarrels as KBarr " .
+			   "from fact_aggregated_year f " . 			   			   
 			   "order by f.year";				
 		   }
            $conn = OpenConnection();  	
