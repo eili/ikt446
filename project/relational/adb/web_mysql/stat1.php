@@ -8,6 +8,7 @@
 	<body>
 	    <div class='jumbotron'>
 			<h1>Oil Export ADB MySQL</h1>			
+			<a href="index.php">Index</a>
 		</div>
 		<?php
 
