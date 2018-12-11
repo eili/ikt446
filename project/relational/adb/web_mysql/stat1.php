@@ -64,33 +64,33 @@
 				echo "<h3>MUSD by year</h3>";
 				echo "<h3>Kbarrels is barrels*1000</h3>";				
 				echo "<table class='table table-sm table-hover'>";
-					echo "<thead><tr><th>Year</th><th>MNOK</th><th>MUSD</th><th>Kbarrels</th></tr></thead>";
+					echo "<thead><tr><th>Year</th><th>MNOK</th><th>MUSD</th><th>Kbarrels</th></tr></thead><tbody>";
 					while($row = $mainQry->fetch_assoc())  
 					{  						
-						echo "<tbody><tr>";
+						echo "<tr>";
 						echo "<td><a href='stat1.php?year={$row["year"]}'>{$row["year"]}</a></td>";																			
 						echo "<td>" . round($row["MNOK"]) . "</td>";
 						echo "<td>" . round($row["MUSD"]) . "</td>";
 						echo "<td>" . round($row["KBarr"]) . "</td>";
-						echo "</tr></tbody>";
+						echo "</tr>";
 					}  
-				echo "</table>";
+				echo "</tbody></table>";
 				echo "<div id='chartContainer1' style='height: 370px; width: 100%;'></div>";
 				echo "</div>"; //col
 				echo "<div class='col-md-6'>";
 				echo "<h3>{$year}</h3>";
 				echo "<table class='table table-sm table-hover'>";
-					echo "<thead><tr><th>Country</th><th>MNOK</th><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead>";
+					echo "<thead><tr><th>Country</th><th>MNOK</th><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead><tbody>";
 					while($row = $getQry->fetch_assoc())
 					{ 
-						echo "<tbody><tr>";
+						echo "<tr>";
 						echo "<td><a href='stat3.php?year={$row["year"]}&cc={$row["cid"]}'>" . $row["cid"] . "</a></td>";
 						echo "<td>" . round($row["MNOK"]) . "</td>";
 						echo "<td>" . round($row["MUSD"]) . "</td>";
 						echo "<td>" . round($row["KBarr"]) . "</td>";
-						echo "</tr></tbody>";
+						echo "</tr>";
 					} 
-				echo "</table>";
+				echo "</tbody></table>";
 				echo "</div>"; //col
 				echo "</div>"; //row
 				echo "</div>"; //container				

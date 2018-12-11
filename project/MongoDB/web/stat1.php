@@ -29,7 +29,7 @@
                 }
                 return (int) $yyyy;
             }
-            function DisplayData($result1, $result2, $year)  
+            function displayData($result1, $result2, $year)  
 			{  																																		
 				echo "<div class='container'>";
 				echo "<div class='row'>";
@@ -37,33 +37,33 @@
 				echo "<h3>MUSD by year</h3>";
 				echo "<h3>Kbarrels is barrels*1000</h3>";				
 				echo "<table class='table table-sm table-hover'>";
-					echo "<thead><tr><th>Year</th><th>MNOK</th><th>MUSD</th><th>Kbarrels</th></tr></thead>";
+					echo "<thead><tr><th>Year</th><th>MNOK</th><th>MUSD</th><th>Kbarrels</th></tr></thead><tbody>";
 					foreach ($result1 as $row) 
 					{  						
-						echo "<tbody><tr>";
+						echo "<tr>";
 						echo "<td><a href='stat1.php?year={$row["year"]}'>{$row["year"]}</a></td>";																			
 						echo "<td>" . round($row["amountMNOK"]) . "</td>";
 						echo "<td>" . round($row["amountMusd"]) . "</td>";
 						echo "<td>" . round($row["kbarrels"]) . "</td>";
-						echo "</tr></tbody>";
+						echo "</tr>";
 					}  
-					echo "</table>";
+					echo "</tbody></table>";
 					echo "<div id='chartContainer1' style='height: 370px; width: 100%;'></div>";
 					echo "</div>"; //col
 					echo "<div class='col-md-6'>";
 					echo "<h3>{$year}</h3>";
 					echo "<table class='table table-sm table-hover'>";
-						echo "<thead><tr><th>Country</th><th>MNOK</th><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead>";
+						echo "<thead><tr><th>Country</th><th>MNOK</th><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead><tbody>";
                     foreach ($result2 as $row) 
 					{ 
-						echo "<tbody><tr>";
+						echo "<tr>";
 						echo "<td><a href='stat3.php?year={$row["year"]}&cc={$row["countrycode"]}'>" . $row["countrycode"] . "</a></td>";
 						echo "<td>" . round($row["amountMNOK"]) . "</td>";
 						echo "<td>" . round($row["amountMusd"]) . "</td>";
 						echo "<td>" . round($row["kbarrels"]) . "</td>";
-						echo "</tr></tbody>";
+						echo "</tr>";
 					} 
-				echo "</table>";
+				echo "</tbody></table>";
 				echo "</div>"; //col
 				echo "</div>"; //row
 				echo "</div>"; //container					
@@ -81,7 +81,7 @@
 			$options2 = ["sort" => ["amountMusd" => -1]];
             $result2 = $aggrByCcColl->find($filter2, $options2);
                         
-            DisplayData($result1, $result2, $year)
+            displayData($result1, $result2, $year)
             
         ?>
 		

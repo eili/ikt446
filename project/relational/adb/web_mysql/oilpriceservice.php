@@ -22,7 +22,7 @@
 		"from oilprice_dim c " . 
 		"order by c.year, c.month";				 
 	}		
-   $conn = OpenConnection();  					    	
+   $conn = openConnection();  					    	
 	$qry = $conn->query(createSql());					
 
 	$dataPoints = array();            

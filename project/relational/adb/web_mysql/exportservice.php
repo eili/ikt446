@@ -53,7 +53,7 @@
 		"and f.cid='{$cc}' " .
 		"order by f.year, f.month";					
 	}		
-	$conn = OpenConnection();  			
+	$conn = openConnection();  			
 	$cc = getCountryCodeparam();		    	
 	$qry = $conn->query(createSql($cc));		
 

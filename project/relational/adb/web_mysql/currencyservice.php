@@ -23,7 +23,7 @@
 		"from currency_dim c " . 				
 		"order by c.year, c.month";				 
 	}		
-	$conn = OpenConnection();  	
+	$conn = openConnection();  	
 				
 	$qry = $conn->query(createSql());	
 

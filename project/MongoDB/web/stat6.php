@@ -73,16 +73,16 @@
 				echo "</div>"; //col
 				echo "<div class='col-md-6'>";
 				echo "<table class='table table-sm table-hover'>";
-                echo "<thead><tr><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead>";
+                echo "<thead><tr><th><a href='stat4.php?year={$year}'>MUSD</a></th><th><a href='stat5.php?year={$year}'>Kbarrels</a></th></tr></thead><tbody>";
                 $daysInMonth = cal_days_in_month(1, $month, $year);
 				foreach ($result1 as $row) 			
 				{
-					echo "<tbody><tr>";					
+					echo "<tr>";					
 					echo "<td>" . round($row["amountMusd"] / $daysInMonth, 1) . "</td>";
 					echo "<td>" . round($row["kbarrels"] / $daysInMonth, 1) . "</td>";
-					echo "</tr></tbody>";
+					echo "</tr>";
 				}
-				echo "</table>";
+				echo "</tbody></table>";
 				echo "</div>"; //col
 				echo "</div>"; //row
 				echo "</div>"; //container				

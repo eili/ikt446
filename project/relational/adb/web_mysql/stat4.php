@@ -65,29 +65,29 @@
 				echo "<div class='col-md-6'>";
 				echo "<h1>USD - NOK exchange rate</h1>";				
 				echo "<table class='table table-sm table-hover'>";
-				echo "<thead><tr><th>Year</th><th>Average currency</th></tr></thead>";
+				echo "<thead><tr><th>Year</th><th>Average currency</th></tr></thead><tbody>";
 				while($row = $avgusdQry->fetch_assoc())			
 				{
-					echo "<tbody><tr>"; 
+					echo "<tr>"; 
 					echo "<td><a href='stat4.php?year={$row["year"]}'>" . $row["year"] . "</a></td>";					
 					echo "<td>" . $row["avgusd"] . "</td>";
-					echo "</tr></tbody>";
+					echo "</tr>";
 				}
-				echo "</table>";
+				echo "</tbody></table>";
 				echo "<div id='chartContainer1' style='height: 370px; width: 100%;'></div>";
 				echo "</div>"; //col
 				echo "<div class='col-md-6'>";
 				echo "<h3>{$year}</h3>";
 				echo "<table class='table table-sm table-hover'>";
-				echo "<thead><tr><th>Month</th><th>1 USD in NOK</th></tr></thead>";
+				echo "<thead><tr><th>Month</th><th>1 USD in NOK</th></tr></thead><tbody>";
 				while($row = $getQry->fetch_assoc()) 								
 				{
-					echo "<tbody><tr>";
+					echo "<tr>";
 					echo "<td>" . $row["month"] . "</td>";
 					echo "<td>" . $row["usdprice"] . "</td>";
-					echo "</tr></tbody>";
+					echo "</tr>";
 				}
-				 echo "</table>";
+				 echo "</tbody></table>";
 				 echo "</div>"; //col
 				 echo "</div>"; //row
 				 echo "</div>"; //container				 

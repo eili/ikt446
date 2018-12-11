@@ -25,7 +25,7 @@
 			   "from fact_aggregated_year f " . 			   			   
 			   "order by f.year";				
 		   }
-           $conn = OpenConnection();  	
+           $conn = openConnection();  	
 			
 	    	$mainsql = createSqlByYear();						
 			$qry = $conn->query($mainsql);
